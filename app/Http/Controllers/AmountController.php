@@ -20,7 +20,7 @@ class AmountController extends Controller
 
         });
 
-        return response()->json(['amounts' => $amounts]);
+        return view('amounts.index', compact('amounts'));
     }
 
     public function store(Request $request)
@@ -32,20 +32,20 @@ class AmountController extends Controller
 
         $amount = \App\Models\Amount::create($request->all());
 
-        return response()->json(['amount' => $amount]);
+        return redirect()->route('amounts.index');
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+      $amounts= $request->validate([
             'amount' => 'numeric',
             'currency' => 'string',
         ]);
 
         $amount = \App\Models\Amount::findOrFail($id);
-        $amount->update($request->all());
+        $amount->update($amounts);
 
-        return response()->json(['amount' => $amount]);
+        return redirect()->route('amounts.index');
     }
 
     public function destroy($id)
@@ -53,5 +53,5 @@ class AmountController extends Controller
         $amount = \App\Models\Amount::findOrFail($id);
         $amount->delete();
 
-        return response()->json(['message' => 'Amount deleted successfully']);
+        return redirect()->route('amounts.index');
     }}

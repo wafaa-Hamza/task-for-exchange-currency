@@ -9,14 +9,15 @@ class ConfigController extends Controller
     public function index()
     {
         $exchangeRates = config('exchange_rates');
-        return response()->json(['exchangeRates'=>$exchangeRates]);
+       // return $exchangeRates;
+        return view('currencies.index', compact('exchangeRates'));
     }
 
     public function store(Request $request)
     {
         // dd('ddd');
         $data = $request->validate([
-            'currency' => 'required|string',
+            'currency' => 'required|string|max:3',
             'rate' => 'required|numeric',
         ]);
 
@@ -24,13 +25,14 @@ class ConfigController extends Controller
         $exchangeRates[$data['currency']] = $data['rate'];
         file_put_contents(config_path('exchange_rates.php'), '<?php return ' . var_export($exchangeRates, true) . ';');
 
-        return $exchangeRates;
+        return redirect()->route('currencies.index');
+
     }
 
     public function update(Request $request, $currency)
     {
         $data = $request->validate([
-            'currency' => 'string',
+            'currency' => 'string|max:3',
             'rate' => 'numeric',
         ]);
 
@@ -40,7 +42,7 @@ class ConfigController extends Controller
             file_put_contents(config_path('exchange_rates.php'), '<?php return ' . var_export($exchangeRates, true) . ';');  //convert array to file php able to wrie in it
         }
 
-        return $exchangeRates;
+        return redirect()->route('currencies.index');
     }
 
 
@@ -52,7 +54,7 @@ class ConfigController extends Controller
             file_put_contents(config_path('exchange_rates.php'), '<?php return ' . var_export($exchangeRates, true) . ';');
         }
 
-        return $exchangeRates;
+        return redirect()->route('currencies.index');
     }
 }
 
